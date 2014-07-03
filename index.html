@@ -64,7 +64,7 @@
 				}
 			});
 			$activate_scrollator3.bind('click', function () {
-				var $document_body = $(document.body);
+				var $document_body = $('body');
 				if ($document_body.data('scrollator') === undefined) {
 					$document_body.scrollator();
 					$activate_scrollator2.val('destroy scrollator')

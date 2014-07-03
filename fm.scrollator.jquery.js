@@ -50,22 +50,22 @@
 			$mainScrollbarsHolder = $('#scrollator_holder');
 			$sourceElement.addClass('scrollator');
 			$thisScrollbarLane = $(document.createElement('div')).addClass('scrollator_lane');
-			if ($sourceElement[0] === document.body) {
+			if ($sourceElement.is('body')) {
 				$thisScrollbarLane.addClass('scrollator_body_lane');
 			}
 			$thisScrollbarHandle = $(document.createElement('div')).addClass('scrollator_handle');
 			initializeMainScrollbarsHolder();
-			$sourceElement.bind('mousewheel', function (e) {
+			$sourceElement.bind('mousewheel DOMMouseScroll', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				mouseWheelEvent(e);
 			});
-			$thisScrollbarLane.bind('mousewheel', function (e) {
+			$thisScrollbarLane.bind('mousewheel DOMMouseScroll', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				mouseWheelEvent(e);
 			});
-			$thisScrollbarHandle.bind('mousewheel', function (e) {
+			$thisScrollbarHandle.bind('mousewheel DOMMouseScroll', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				mouseWheelEvent(e);
@@ -83,7 +83,7 @@
 				e.preventDefault();
 				isDraggingHandle = true;
 				dragStartY = e.clientY;
-				dragStartScrollTop = $($sourceElement).scrollTop();
+				dragStartScrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 				dragHandleOffsetY = e.offsetY;
 			});
 			$(window).bind('mouseup', function () {
@@ -92,8 +92,8 @@
 			$(window).bind('mousemove', function (e) {
 				if (isDraggingHandle) {
 					var draggedY = e.clientY - dragStartY;
-					var multiplier = $sourceElement[0].scrollHeight / (($sourceElement[0] === document.body) ? $(window).height() : $sourceElement.innerHeight());
-					$($sourceElement).scrollTop(dragStartScrollTop + (draggedY * multiplier));
+					var multiplier = $sourceElement[0].scrollHeight / (($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight());
+					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(dragStartScrollTop + (draggedY * multiplier));
 					refreshScrollbarPosition();
 					mouseMoveEvent();
 				}
@@ -102,7 +102,16 @@
 			$mainScrollbarsHolder.append($thisScrollbarLane);
 			refreshScrollbarPosition();
 		};
-		
+
+
+		var mouseWheelEvent = function (e) {
+			var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+			var wheelDelta = e.originalEvent.wheelDelta !== undefined ? e.originalEvent.wheelDelta : (e.originalEvent.detail*-1);
+			scrollTop += (wheelDelta > 0) ? -100 : 100;
+			($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
+			refreshScrollbarPosition();
+		};
+
 
 		var mouseMoveEvent = function () {
 			clearTimeout(timerVisibility);
@@ -111,15 +120,7 @@
 				$thisScrollbarLane.css('opacity', 0);
 			}, 1500);
 		};
-
-		
-		var mouseWheelEvent = function (e) {
-			var scrollTop = $($sourceElement).scrollTop();
-			scrollTop += (e.originalEvent.wheelDelta > 0) ? -100 : 100;
-			$($sourceElement).scrollTop(scrollTop);
-			refreshScrollbarPosition();
-		};
-		
+	
 		
 		var refreshScrollbarPosition = function () {
 			var boundingClientRect = $sourceElement[0].getBoundingClientRect();
@@ -136,11 +137,10 @@
 			var paddingBottom = parseInt($sourceElement.css('border-bottom-width'), 10) + 3;
 			var paddingLeft = parseInt($sourceElement.css('border-left-width'), 10);
 			var contentHeight = $sourceElement[0].scrollHeight;
-			var laneHeight = ($sourceElement[0] === document.body) ? $(window).height() : $sourceElement.innerHeight();
+			var laneHeight = ($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight();
 			var handleHeight = (laneHeight / contentHeight) * 100;
-			var handlePosition = ($sourceElement.scrollTop() / contentHeight) * 100;
-			console.log(laneHeight + ',' + contentHeight + ',' + handleHeight + ',' + handlePosition);
-			if ($sourceElement[0] !== document.body) {
+			var handlePosition = (($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop() / contentHeight) * 100;
+			if (!$sourceElement.is('body')) {
 				$thisScrollbarLane.css({
 					top: sourceBounds.top + paddingTop,
 					right: -sourceBounds.right + paddingRight,
@@ -158,7 +158,7 @@
 		var initializeMainScrollbarsHolder = function () {
 			if ($mainScrollbarsHolder.length === 0) {
 				$mainScrollbarsHolder = $(document.createElement('div')).attr('id', 'scrollator_holder');
-				$(document.body).append($mainScrollbarsHolder);
+				$('body').append($mainScrollbarsHolder);
 			}
 		};
 
@@ -167,7 +167,7 @@
 		plugin.destroy = function () {
 			$sourceElement.removeClass('scrollator');
 			$.removeData(sourceElement, 'scrollator');
-			$sourceElement.unbind('mousewheel');
+			$sourceElement.unbind('mousewheel DOMMouseScroll');
 			$thisScrollbarLane.remove();
 			if ($mainScrollbarsHolder.children().length === 0) {
 				$mainScrollbarsHolder.remove();
