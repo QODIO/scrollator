@@ -1,0 +1,10 @@
+/**
+ * Scrollator jQuery Plugin
+ * Scrollator is a jQuery-based replacement for the browsers scroll bar, which doesn't use any space.
+ * version 1.0, July 3rd, 2014
+ * by Ingi P. Jacobsen
+ */
+
+.scrollator {
+	overflow: hidden !important;
+}

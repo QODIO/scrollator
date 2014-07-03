@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Scrollator Plugin</title>
+	<link rel="stylesheet" href="fm.scrollator.jquery.css" />
+	<style>
+		body {
+			font-family: sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f6f6f6;
+		}
+		label {
+			font-weight: bold;
+		}
+		#wrapper {
+			padding: 15px;
+		}
+		#scrollable_div1 {
+			height: 200px;
+			width: 700px;
+			overflow: auto;
+			background-color: #fff;
+			border: 1px solid #999;
+			padding: 10px;
+		}
+		#scrollable_div2 {
+			height: 200px;
+			width: 700px;
+			overflow: auto;
+			background-color: #fff;
+			border: 1px solid #999;
+			padding: 10px;
+		}
+	</style>
+	<script src="jquery-1.11.0.min.js"></script>
+	<script src="fm.scrollator.jquery.js"></script>
+	<script>
+		$(function () {
+			var $activate_scrollator1 = $('#activate_scrollator1');
+			var $activate_scrollator2 = $('#activate_scrollator2');
+
+			$activate_scrollator1.bind('click', function () {
+				var $scrollable_div1 = $('#scrollable_div1');
+				if ($scrollable_div1.data('scrollator') === undefined) {
+					$scrollable_div1.scrollator();
+					$activate_scrollator1.val('destroy scrollator')
+				} else {
+					$scrollable_div1.scrollator('destroy');
+					$activate_scrollator1.val('activate scrollator')
+				}
+			});
+			$activate_scrollator2.bind('click', function () {
+				var $scrollable_div2 = $('#scrollable_div2');
+				if ($scrollable_div2.data('scrollator') === undefined) {
+					$scrollable_div2.scrollator();
+					$activate_scrollator2.val('destroy scrollator')
+				} else {
+					$scrollable_div2.scrollator('destroy');
+					$activate_scrollator2.val('activate scrollator')
+				}
+			});
+
+			$activate_scrollator1.trigger('click');
+			$activate_scrollator2.trigger('click');
+		});
+	</script>
+</head>
+<body>
+	<div id="wrapper">
+		<label>default</label><br>
+		<div id="scrollable_div1">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam rhoncus, felis interdum condimentum consectetur, nisl libero elementum eros, vehicula congue lacus eros non diam. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus mauris lorem, lacinia id tempus non, imperdiet et leo. Cras sit amet erat sit amet lacus egestas placerat. Aenean ultricies ultrices mauris ac congue. In vel tortor vel velit tristique tempus ac id nisi. Proin quis lorem velit. Nunc dui dui, blandit a ullamcorper vitae, congue fringilla lectus. Aliquam ultricies malesuada feugiat. Vestibulum placerat turpis et eros lobortis vel semper sapien pulvinar.<br>
+			<br>
+			Pellentesque rhoncus aliquet porta. Sed vel magna eu turpis pharetra consequat ut vitae lectus. In molestie sollicitudin mi sit amet convallis. Aliquam erat volutpat. Nullam feugiat placerat ipsum eget malesuada. Nulla facilisis nunc non dolor vehicula pretium. Sed dui magna, sodales id pharetra non, ullamcorper eu sapien. Mauris ac consectetur leo. Mauris consequat, lectus ut bibendum pulvinar, leo magna feugiat enim, eu commodo lacus sem vel ante. Sed tempus metus eget leo mollis vulputate. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.<br>
+			<br>
+			Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed pulvinar rhoncus quam, vel semper tellus viverra id. Nulla rutrum porttitor odio, a rutrum purus gravida non. Etiam ac purus augue, eget vestibulum purus. Aenean venenatis ullamcorper augue, non consequat elit tempor sed. Donec velit sapien, volutpat sed ultricies egestas, semper a ante. Fusce dapibus, quam eget auctor suscipit, nibh leo posuere ante, at auctor nisi lacus in sem. Morbi interdum consectetur euismod. Cras accumsan est lacus. Nulla eleifend, eros vel consequat commodo, arcu nunc malesuada nunc, quis sagittis felis sem ac turpis.<br>
+			<br>
+			Nulla rhoncus elementum convallis. Mauris condimentum aliquet egestas. Ut iaculis nisi eget tellus accumsan venenatis. Maecenas imperdiet aliquam porta. Aenean ultrices dolor sed quam laoreet varius. Curabitur condimentum blandit erat, quis accumsan eros interdum vitae. Curabitur ligula arcu, sollicitudin vitae iaculis sed, blandit sit amet enim. Morbi ullamcorper, metus vel mollis tristique, arcu turpis malesuada nisi, at dignissim lorem odio a orci. Proin ultrices, ipsum ut vestibulum interdum, libero felis auctor mi, vitae convallis nisl justo ac tellus. Integer nec lacinia turpis. Etiam massa nisl, rhoncus quis rutrum in, pretium eu leo. Proin a velit ut nulla laoreet vestibulum. Curabitur eu elit vitae felis auctor tincidunt. Curabitur tincidunt, metus sed sollicitudin cursus, quam elit commodo erat, ut tempor erat sapien vitae velit. Morbi nec viverra erat.<br>
+			<br>
+			Nullam scelerisque facilisis pretium. Vivamus lectus leo, commodo ac sagittis ac, dictum a mi. Donec quis massa ut libero malesuada commodo in et risus. Fusce nunc dolor, aliquet vel rutrum in, molestie sit amet massa. Aliquam suscipit, justo a commodo condimentum, enim sapien fringilla ante, sed lobortis orci lectus in ante. Donec vel interdum est. Donec placerat cursus lacus, eu ultricies nisl tincidunt a. Fusce libero risus, sagittis eleifend iaculis aliquet, condimentum vitae diam. Suspendisse potenti. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin leo purus, sodales a venenatis luctus, faucibus ac enim. Sed id metus ac sem lobortis pretium. Mauris faucibus tempor scelerisque. Nunc vulputate interdum tortor, non tincidunt dui condimentum eget. Aenean in porttitor velit. Nam accumsan rhoncus risus id consectetur.<br>
+			<br>
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam rhoncus, felis interdum condimentum consectetur, nisl libero elementum eros, vehicula congue lacus eros non diam. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus mauris lorem, lacinia id tempus non, imperdiet et leo. Cras sit amet erat sit amet lacus egestas placerat. Aenean ultricies ultrices mauris ac congue. In vel tortor vel velit tristique tempus ac id nisi. Proin quis lorem velit. Nunc dui dui, blandit a ullamcorper vitae, congue fringilla lectus. Aliquam ultricies malesuada feugiat. Vestibulum placerat turpis et eros lobortis vel semper sapien pulvinar.<br>
+			<br>
+			Pellentesque rhoncus aliquet porta. Sed vel magna eu turpis pharetra consequat ut vitae lectus. In molestie sollicitudin mi sit amet convallis. Aliquam erat volutpat. Nullam feugiat placerat ipsum eget malesuada. Nulla facilisis nunc non dolor vehicula pretium. Sed dui magna, sodales id pharetra non, ullamcorper eu sapien. Mauris ac consectetur leo. Mauris consequat, lectus ut bibendum pulvinar, leo magna feugiat enim, eu commodo lacus sem vel ante. Sed tempus metus eget leo mollis vulputate. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.<br>
+		</div>
+		<input value="activate scrollator" id="activate_scrollator1" type="button">
+		<br>
+		<br>
+		<label>default</label><br>
+		<div id="scrollable_div2">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam rhoncus, felis interdum condimentum consectetur, nisl libero elementum eros, vehicula congue lacus eros non diam. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus mauris lorem, lacinia id tempus non, imperdiet et leo. Cras sit amet erat sit amet lacus egestas placerat. Aenean ultricies ultrices mauris ac congue. In vel tortor vel velit tristique tempus ac id nisi. Proin quis lorem velit. Nunc dui dui, blandit a ullamcorper vitae, congue fringilla lectus. Aliquam ultricies malesuada feugiat. Vestibulum placerat turpis et eros lobortis vel semper sapien pulvinar.<br>
+			<br>
+			Pellentesque rhoncus aliquet porta. Sed vel magna eu turpis pharetra consequat ut vitae lectus. In molestie sollicitudin mi sit amet convallis. Aliquam erat volutpat. Nullam feugiat placerat ipsum eget malesuada. Nulla facilisis nunc non dolor vehicula pretium. Sed dui magna, sodales id pharetra non, ullamcorper eu sapien. Mauris ac consectetur leo. Mauris consequat, lectus ut bibendum pulvinar, leo magna feugiat enim, eu commodo lacus sem vel ante. Sed tempus metus eget leo mollis vulputate. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.<br>
+			<br>
+			Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed pulvinar rhoncus quam, vel semper tellus viverra id. Nulla rutrum porttitor odio, a rutrum purus gravida non. Etiam ac purus augue, eget vestibulum purus. Aenean venenatis ullamcorper augue, non consequat elit tempor sed. Donec velit sapien, volutpat sed ultricies egestas, semper a ante. Fusce dapibus, quam eget auctor suscipit, nibh leo posuere ante, at auctor nisi lacus in sem. Morbi interdum consectetur euismod. Cras accumsan est lacus. Nulla eleifend, eros vel consequat commodo, arcu nunc malesuada nunc, quis sagittis felis sem ac turpis.<br>
+			<br>
+			Nulla rhoncus elementum convallis. Mauris condimentum aliquet egestas. Ut iaculis nisi eget tellus accumsan venenatis. Maecenas imperdiet aliquam porta. Aenean ultrices dolor sed quam laoreet varius. Curabitur condimentum blandit erat, quis accumsan eros interdum vitae. Curabitur ligula arcu, sollicitudin vitae iaculis sed, blandit sit amet enim. Morbi ullamcorper, metus vel mollis tristique, arcu turpis malesuada nisi, at dignissim lorem odio a orci. Proin ultrices, ipsum ut vestibulum interdum, libero felis auctor mi, vitae convallis nisl justo ac tellus. Integer nec lacinia turpis. Etiam massa nisl, rhoncus quis rutrum in, pretium eu leo. Proin a velit ut nulla laoreet vestibulum. Curabitur eu elit vitae felis auctor tincidunt. Curabitur tincidunt, metus sed sollicitudin cursus, quam elit commodo erat, ut tempor erat sapien vitae velit. Morbi nec viverra erat.<br>
+		</div>
+		<input value="activate scrollator" id="activate_scrollator2" type="button">
+	</div>
+
+</body>
+</html>
