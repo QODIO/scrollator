@@ -5,6 +5,45 @@
  * by Ingi P. Jacobsen
  */
 
+#scrollator_holder {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 0;
+	height: 0;
+}
 .scrollator {
 	overflow: hidden !important;
+}
+
+.scrollator_lane {
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 9px;
+	position: absolute;
+	box-sizing: border-box;
+	background-color: rgba(0, 0, 0, 0);
+	border-radius: 10px;
+	transition: background 200ms, width 200ms, opacity 200ms;
+	opacity: 0;
+}
+.scrollator_lane.scrollator_body_lane {
+	position: fixed;
+	margin: 3px 3px 3px 0;
+}
+.scrollator_lane:hover {
+	background-color: rgba(0, 0, 0, .15);
+	width: 15px;
+}
+
+.scrollator_handle {
+	position: absolute;
+	width: 9px;
+	border-radius: 10px;
+	background-color: rgba(0, 0, 0, .4);
+	transition: width 200ms;
+}
+.scrollator_lane:hover .scrollator_handle {
+	width: 15px;
 }

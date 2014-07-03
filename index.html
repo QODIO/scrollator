@@ -32,6 +32,7 @@
 			background-color: #fff;
 			border: 1px solid #999;
 			padding: 10px;
+			box-sizing: border-box;
 		}
 	</style>
 	<script src="jquery-1.11.0.min.js"></script>
@@ -40,6 +41,7 @@
 		$(function () {
 			var $activate_scrollator1 = $('#activate_scrollator1');
 			var $activate_scrollator2 = $('#activate_scrollator2');
+			var $activate_scrollator3 = $('#activate_scrollator3');
 
 			$activate_scrollator1.bind('click', function () {
 				var $scrollable_div1 = $('#scrollable_div1');
@@ -61,9 +63,20 @@
 					$activate_scrollator2.val('activate scrollator')
 				}
 			});
+			$activate_scrollator3.bind('click', function () {
+				var $document_body = $(document.body);
+				if ($document_body.data('scrollator') === undefined) {
+					$document_body.scrollator();
+					$activate_scrollator2.val('destroy scrollator')
+				} else {
+					$document_body.scrollator('destroy');
+					$activate_scrollator2.val('activate scrollator')
+				}
+			});
 
 			$activate_scrollator1.trigger('click');
 			$activate_scrollator2.trigger('click');
+			$activate_scrollator3.trigger('click');
 		});
 	</script>
 </head>
@@ -88,7 +101,7 @@
 		<input value="activate scrollator" id="activate_scrollator1" type="button">
 		<br>
 		<br>
-		<label>default</label><br>
+		<label>box-sizing: border-box</label><br>
 		<div id="scrollable_div2">
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam rhoncus, felis interdum condimentum consectetur, nisl libero elementum eros, vehicula congue lacus eros non diam. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus mauris lorem, lacinia id tempus non, imperdiet et leo. Cras sit amet erat sit amet lacus egestas placerat. Aenean ultricies ultrices mauris ac congue. In vel tortor vel velit tristique tempus ac id nisi. Proin quis lorem velit. Nunc dui dui, blandit a ullamcorper vitae, congue fringilla lectus. Aliquam ultricies malesuada feugiat. Vestibulum placerat turpis et eros lobortis vel semper sapien pulvinar.<br>
 			<br>
@@ -99,6 +112,66 @@
 			Nulla rhoncus elementum convallis. Mauris condimentum aliquet egestas. Ut iaculis nisi eget tellus accumsan venenatis. Maecenas imperdiet aliquam porta. Aenean ultrices dolor sed quam laoreet varius. Curabitur condimentum blandit erat, quis accumsan eros interdum vitae. Curabitur ligula arcu, sollicitudin vitae iaculis sed, blandit sit amet enim. Morbi ullamcorper, metus vel mollis tristique, arcu turpis malesuada nisi, at dignissim lorem odio a orci. Proin ultrices, ipsum ut vestibulum interdum, libero felis auctor mi, vitae convallis nisl justo ac tellus. Integer nec lacinia turpis. Etiam massa nisl, rhoncus quis rutrum in, pretium eu leo. Proin a velit ut nulla laoreet vestibulum. Curabitur eu elit vitae felis auctor tincidunt. Curabitur tincidunt, metus sed sollicitudin cursus, quam elit commodo erat, ut tempor erat sapien vitae velit. Morbi nec viverra erat.<br>
 		</div>
 		<input value="activate scrollator" id="activate_scrollator2" type="button">
+		<br>
+		<br>
+		<label>you can also test it on the main window</label><br>
+		<input value="activate scrollator" id="activate_scrollator3" type="button">
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		it goes on...
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		and on...
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		and on...
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		and on...
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		and STOP!
 	</div>
 
 </body>
