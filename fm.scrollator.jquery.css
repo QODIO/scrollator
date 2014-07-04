@@ -9,11 +9,11 @@
 	left: 0;
 	top: 0;
 	width: 0;
-	height: 0
+	height: 0;
 }
 
 .scrollator {
-	overflow: hidden !important
+	overflow: hidden !important;
 }
 
 .scrollator_lane {
@@ -33,17 +33,18 @@
 	-ms-transition: background 200ms, width 200ms, opacity 200ms;
 	-o-transition: background 200ms, width 200ms, opacity 200ms;
 	transition: background 200ms, width 200ms, opacity 200ms;
-	opacity: 1
+	opacity: 1;
 }
 
 .scrollator_lane.scrollator_body_lane {
 	position: fixed;
-	margin: 3px 3px 3px 0
+	margin: 3px 3px 3px 0;
 }
 
-.scrollator_lane.hover, .scrollator_lane:hover {
+.scrollator_lane.hover, 
+.scrollator_lane:hover {
 	background-color: rgba(0, 0, 0, 0.15);
-	width: 15px
+	width: 15px;
 }
 
 .scrollator_handle {
@@ -57,9 +58,10 @@
 	-moz-transition: width 200ms;
 	-ms-transition: width 200ms;
 	-o-transition: width 200ms;
-	transition: width 200ms
+	transition: width 200ms;
 }
 
-.scrollator_lane.hover .scrollator_handle, .scrollator_lane:hover .scrollator_handle {
-	width: 15px
+.scrollator_lane.hover .scrollator_handle, 
+.scrollator_lane:hover .scrollator_handle {
+	width: 15px;
 }
