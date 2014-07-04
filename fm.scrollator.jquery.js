@@ -181,6 +181,19 @@ $(window).load(function () {
 				$('body').append($mainScrollbarsHolder);
 			}
 		};
+		
+		
+		// HIDE SCROLLATOR
+		plugin.hide = function () {
+			console.log('hide');
+			$thisScrollbarLane.hide();
+		};
+		
+		// SHOW SCROLLATOR
+		plugin.show = function () {
+			console.log('show');
+			$thisScrollbarLane.show();
+		};
 
 
 		// REMOVE PLUGIN AND REVERT INPUT ELEMENT TO ORIGINAL STATE
