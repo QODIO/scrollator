@@ -31,7 +31,11 @@ Scrollator = {
 	refreshAll: function () {
 		var i = Scrollator.scrollatorElementsStack.length;
 		while (i--) {
-			Scrollator.scrollatorElementsStack[i].refresh();
+			if (!Scrollator.scrollatorElementsStack[i].$sourceElement.closest('body').length > 0) {
+				Scrollator.scrollatorElementsStack[i].destroy();
+			} else {
+				Scrollator.scrollatorElementsStack[i].refresh();
+			}
 		}
 	}
 };
@@ -45,9 +49,11 @@ $(window).load(function () {
 
 		var plugin = this;
 		plugin.settings = {
-			custom_class: ''
+			custom_class: '',
+			zIndex: ''
 		};
 		var $sourceElement = $(sourceElement);
+		plugin.$sourceElement = $sourceElement;
 		var $mainScrollbarsHolder = null;
 		var $thisScrollbarLane = null;
 		var $thisScrollbarHandle = null;
@@ -63,10 +69,11 @@ $(window).load(function () {
 			plugin.settings = $.extend({}, defaults, options);
 			$mainScrollbarsHolder = $('#scrollator_holder');
 			$sourceElement.addClass('scrollator');
-			$thisScrollbarLane = $(document.createElement('div')).addClass('scrollator_lane').addClass(plugin.settings.custom_class);
-			if ($sourceElement.is('body')) {
-				$thisScrollbarLane.addClass('scrollator_body_lane');
-			}
+			$thisScrollbarLane = $(document.createElement('div')).addClass('scrollator_lane');
+			$thisScrollbarLane.addClass(plugin.settings.custom_class);
+			$thisScrollbarLane.css('z-index', $sourceElement.css('z-index'));
+			plugin.settings.zIndex !== '' && $thisScrollbarLane.css('z-index', plugin.settings.zIndex);
+			$sourceElement.is('body') && $thisScrollbarLane.addClass('scrollator_body_lane');
 			$thisScrollbarHandle = $(document.createElement('div')).addClass('scrollator_handle');
 			initializeMainScrollbarsHolder();
 			$sourceElement.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
@@ -99,7 +106,7 @@ $(window).load(function () {
 				var wheelDelta = e.originalEvent.wheelDelta !== undefined ? e.originalEvent.wheelDelta : (e.originalEvent.detail*-1);
 				scrollTop += (wheelDelta > 0) ? -100 : 100;
 				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
-				refreshScrollbarPosition();
+				Scrollator.refreshAll();
 			}
 		};
 		var mouseMoveEvent = function () {
@@ -122,7 +129,7 @@ $(window).load(function () {
 				var draggedY = e.clientY - dragStartY;
 				var multiplier = $sourceElement[0].scrollHeight / (($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight());
 				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(dragStartScrollTop + (draggedY * multiplier));
-				refreshScrollbarPosition();
+				Scrollator.refreshAll();
 				mouseMoveEvent();
 			}
 		};
