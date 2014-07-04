@@ -26,6 +26,15 @@
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+Scrollator = {
+	scrollatorElementsStack: [],
+	refreshAll: function () {
+		var i = Scrollator.scrollatorElementsStack.length;
+		while (i--) {
+			Scrollator.scrollatorElementsStack[i].refresh();
+		}
+	}
+};
 (function($) {
 	$.scrollator = function (sourceElement, options) {
 		var defaults = {
@@ -55,64 +64,39 @@
 			}
 			$thisScrollbarHandle = $(document.createElement('div')).addClass('scrollator_handle');
 			initializeMainScrollbarsHolder();
-			$sourceElement.bind('mousewheel DOMMouseScroll', function (e) {
-				e.preventDefault();
-				e.stopPropagation();
-				mouseWheelEvent(e);
-			});
-			$thisScrollbarLane.bind('mousewheel DOMMouseScroll', function (e) {
-				e.preventDefault();
-				e.stopPropagation();
-				mouseWheelEvent(e);
-			});
-			$thisScrollbarHandle.bind('mousewheel DOMMouseScroll', function (e) {
-				e.preventDefault();
-				e.stopPropagation();
-				mouseWheelEvent(e);
-			});
-			$sourceElement.bind('mousemove', function () {
-				mouseMoveEvent();
-			});
-			$thisScrollbarLane.bind('mousemove', function () {
-				mouseMoveEvent();
-			});
-			$thisScrollbarHandle.bind('mousemove', function () {
-				mouseMoveEvent();
-			});
-			$thisScrollbarHandle.bind('mousedown', function (e) {
-				e.preventDefault();
-				isDraggingHandle = true;
-				dragStartY = e.clientY;
-				dragStartScrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
-				dragHandleOffsetY = e.offsetY;
-			});
-			$(window).bind('mouseup', function () {
-				isDraggingHandle = false;
-			});
-			$(window).bind('mousemove', function (e) {
-				if (isDraggingHandle) {
-					var draggedY = e.clientY - dragStartY;
-					var multiplier = $sourceElement[0].scrollHeight / (($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight());
-					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(dragStartScrollTop + (draggedY * multiplier));
-					refreshScrollbarPosition();
-					mouseMoveEvent();
-				}
-			});
+			$sourceElement.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$thisScrollbarLane.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$thisScrollbarHandle.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$sourceElement.bind('mousemove', mouseMoveEvent);
+			$thisScrollbarLane.bind('mousemove', mouseMoveEvent);
+			$thisScrollbarHandle.bind('mousemove', mouseMoveEvent);
+			$thisScrollbarHandle.bind('mousedown', mouseDownEvent);
+			$(window).bind('mouseup', windowMouseUpEvent);
+			$(window).bind('mousemove', windowMouseMoveEvent);
 			$thisScrollbarLane.append($thisScrollbarHandle);
 			$mainScrollbarsHolder.append($thisScrollbarLane);
 			refreshScrollbarPosition();
+			// refresh/resize/position all scrollbars on window resize
+			if (!document.body.hasScrollatorPageResizeEventHandler) {
+				document.body.hasScrollatorPageResizeEventHandler = true;
+				$(window).bind('resize', function () {
+					Scrollator.refreshAll();
+				});
+			}
 		};
 
 
 		var mouseWheelEvent = function (e) {
-			var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
-			var wheelDelta = e.originalEvent.wheelDelta !== undefined ? e.originalEvent.wheelDelta : (e.originalEvent.detail*-1);
-			scrollTop += (wheelDelta > 0) ? -100 : 100;
-			($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
-			refreshScrollbarPosition();
+			if ($(e.target).css('overflow-y') != 'auto') {
+				e.preventDefault();
+				e.stopPropagation();
+				var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+				var wheelDelta = e.originalEvent.wheelDelta !== undefined ? e.originalEvent.wheelDelta : (e.originalEvent.detail*-1);
+				scrollTop += (wheelDelta > 0) ? -100 : 100;
+				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
+				refreshScrollbarPosition();
+			}
 		};
-
-
 		var mouseMoveEvent = function () {
 			clearTimeout(timerVisibility);
 			$thisScrollbarLane.css('opacity', 1);
@@ -120,8 +104,32 @@
 				$thisScrollbarLane.css('opacity', 0);
 			}, 1500);
 		};
+		var mouseDownEvent = function (e) {
+			e.preventDefault();
+			isDraggingHandle = true;
+			dragStartY = e.clientY;
+			dragStartScrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+			dragHandleOffsetY = e.offsetY;
+			$thisScrollbarLane.addClass('hover');
+		};
+		var windowMouseMoveEvent = function (e) {
+			if (isDraggingHandle) {
+				var draggedY = e.clientY - dragStartY;
+				var multiplier = $sourceElement[0].scrollHeight / (($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight());
+				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(dragStartScrollTop + (draggedY * multiplier));
+				refreshScrollbarPosition();
+				mouseMoveEvent();
+			}
+		};
+		var windowMouseUpEvent = function () {
+			isDraggingHandle = false;
+			$thisScrollbarLane.removeClass('hover');
+		};
 	
-		
+
+		plugin.refresh = function () {
+			refreshScrollbarPosition();
+		};
 		var refreshScrollbarPosition = function () {
 			var boundingClientRect = $sourceElement[0].getBoundingClientRect();
 			var sourceBounds = {
@@ -167,8 +175,17 @@
 		plugin.destroy = function () {
 			$sourceElement.removeClass('scrollator');
 			$.removeData(sourceElement, 'scrollator');
-			$sourceElement.unbind('mousewheel DOMMouseScroll');
+			$sourceElement.unbind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$sourceElement.unbind('mousemove', mouseMoveEvent);
+			$(window).unbind('mouseup', windowMouseUpEvent);
+			$(window).unbind('mousemove', windowMouseMoveEvent);
 			$thisScrollbarLane.remove();
+			var i = Scrollator.scrollatorElementsStack.length;
+			while (i--) {
+				if (Scrollator.scrollatorElementsStack[i] === plugin) {
+					Scrollator.scrollatorElementsStack.splice(i, 1);
+				}
+			}
 			if ($mainScrollbarsHolder.children().length === 0) {
 				$mainScrollbarsHolder.remove();
 				$mainScrollbarsHolder = null;
@@ -182,15 +199,18 @@
 	$.fn.scrollator = function(options) {
 		options = options !== undefined ? options : {};
 		return this.each(function () {
-			if (typeof(options) === 'object') {
-				if (undefined === $(this).data('scrollator')) {
-					var plugin = new $.scrollator(this, options);
-					$(this).data('scrollator', plugin);
+			if ( !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+				if (typeof(options) === 'object') {
+					if (undefined === $(this).data('scrollator')) {
+						var plugin = new $.scrollator(this, options);
+						Scrollator.scrollatorElementsStack.push(plugin);
+						$(this).data('scrollator', plugin);
+					}
+				} else if ($(this).data('scrollator')[options]) {
+					$(this).data('scrollator')[options].apply(this, Array.prototype.slice.call(arguments, 1));
+				} else {
+					$.error('Method ' + options + ' does not exist in $.scrollator');
 				}
-			} else if ($(this).data('scrollator')[options]) {
-				$(this).data('scrollator')[options].apply(this, Array.prototype.slice.call(arguments, 1));
-			} else {
-				$.error('Method ' + options + ' does not exist in $.scrollator');
 			}
 		});
 	};

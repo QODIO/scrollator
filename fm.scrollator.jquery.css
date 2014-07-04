@@ -32,6 +32,7 @@
 	position: fixed;
 	margin: 3px 3px 3px 0;
 }
+.scrollator_lane.hover,
 .scrollator_lane:hover {
 	background-color: rgba(0, 0, 0, .15);
 	width: 15px;
@@ -44,6 +45,7 @@
 	background-color: rgba(0, 0, 0, .4);
 	transition: width 200ms;
 }
+.scrollator_lane.hover .scrollator_handle,
 .scrollator_lane:hover .scrollator_handle {
 	width: 15px;
 }
