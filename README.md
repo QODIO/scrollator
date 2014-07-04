@@ -36,6 +36,9 @@ jQuery methods
 Method             | Description
 ------------------ | -----------
 destroy            | This method is used to remove the instance of the plugin from the element box.
+refresh            | Resize and reposition the scrollator.
+show               | Show the scrollator.
+hide               | Hide the scrollator.
 
 
 ###### Method usage
