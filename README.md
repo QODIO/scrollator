@@ -25,7 +25,8 @@ $('#scrollable_div').scrollator();
 ###### if you want to change settings:
 ```javascript
 $('#scrollable_div').scrollator({
-    custom_class: '',			// A class to be added to this scrollator lane
+    custom_class: '',	// A class to be added to this scrollator lane
+    zIndex: '',			// z-index to be added to the scrollbar lane
 });
 ```
 
