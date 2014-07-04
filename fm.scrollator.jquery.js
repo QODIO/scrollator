@@ -35,13 +35,18 @@ Scrollator = {
 		}
 	}
 };
+$(window).load(function () {
+	Scrollator.refreshAll();
+});
 (function($) {
 	$.scrollator = function (sourceElement, options) {
 		var defaults = {
 		};
 
 		var plugin = this;
-		plugin.settings = {};
+		plugin.settings = {
+			custom_class: ''
+		};
 		var $sourceElement = $(sourceElement);
 		var $mainScrollbarsHolder = null;
 		var $thisScrollbarLane = null;
@@ -58,7 +63,7 @@ Scrollator = {
 			plugin.settings = $.extend({}, defaults, options);
 			$mainScrollbarsHolder = $('#scrollator_holder');
 			$sourceElement.addClass('scrollator');
-			$thisScrollbarLane = $(document.createElement('div')).addClass('scrollator_lane');
+			$thisScrollbarLane = $(document.createElement('div')).addClass('scrollator_lane').addClass(plugin.settings.custom_class);
 			if ($sourceElement.is('body')) {
 				$thisScrollbarLane.addClass('scrollator_body_lane');
 			}
