@@ -54,6 +54,19 @@ $('#scrollable_div').numbertor('destroy');
 ```
 
 
+CSS classes
+-----------
+Here is a list of all the css classes
+
+Class                | Description
+-------------------- | ------------------------------------------------------------------------------
+#scrollator_holder   | The main scrollator holder has this id.
+scrollator           | This class is added to the scrollable elements which scrollator is added to.
+scrollator_lane      | The scrollator lane.
+scrollator_body_lane | This class is added to the scrollator lane, if it is the lane of a body element.
+scrollator_handle    | The scrollator handle.
+
+
 Browser compatibility
 ---------------------
 * IE ?
