@@ -31,6 +31,13 @@ $('#scrollable_div').scrollator({
 ```
 
 
+Global methods
+--------------
+Method                 | Description
+---------------------- | -----------
+Scrollator.refreshAll  | Resize and reposition all scrollators.
+
+
 jQuery methods
 --------------
 Method             | Description
