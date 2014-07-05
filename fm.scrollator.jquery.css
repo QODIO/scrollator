@@ -6,8 +6,8 @@
  */
 #scrollator_holder {
 	position: absolute;
-	left: 0;
 	top: 0;
+	left: 0;
 	width: 0;
 	height: 0;
 }
@@ -16,52 +16,87 @@
 	overflow: hidden !important;
 }
 
-.scrollator_lane {
+.scrollator_lane_holder {
+	position: absolute;
 	top: 0;
 	right: 0;
 	bottom: 0;
-	width: 9px;
-	position: absolute;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	background-color: rgba(0, 0, 0, 0);
+	width: 15px;
+	background-color: transparent;
+	opacity: 1;
+	-webkit-transition: background 200ms, width 200ms, opacity 200ms;
+	-moz-transition:    background 200ms, width 200ms, opacity 200ms;
+	-ms-transition:     background 200ms, width 200ms, opacity 200ms;
+	-o-transition:      background 200ms, width 200ms, opacity 200ms;
+	transition:         background 200ms, width 200ms, opacity 200ms;
+}
+.scrollator_lane {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	bottom: 3px;
+	left: 3px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
+	background-color: rgba(0, 0, 0, 0);
 	-webkit-transition: background 200ms, width 200ms, opacity 200ms;
-	-moz-transition: background 200ms, width 200ms, opacity 200ms;
-	-ms-transition: background 200ms, width 200ms, opacity 200ms;
-	-o-transition: background 200ms, width 200ms, opacity 200ms;
-	transition: background 200ms, width 200ms, opacity 200ms;
-	opacity: 1;
+	-moz-transition:    background 200ms, width 200ms, opacity 200ms;
+	-ms-transition:     background 200ms, width 200ms, opacity 200ms;
+	-o-transition:      background 200ms, width 200ms, opacity 200ms;
+	transition:         background 200ms, width 200ms, opacity 200ms;
 }
 
-.scrollator_lane.scrollator_body_lane {
+.scrollator_lane_holder.scrollator_on_body {
 	position: fixed;
-	margin: 3px 3px 3px 0;
 }
 
-.scrollator_lane.hover, 
-.scrollator_lane:hover {
+.scrollator_lane_holder.hover, 
+.scrollator_lane_holder:hover {
+	width: 21px;
+}
+.scrollator_lane_holder.hover > .scrollator_lane, 
+.scrollator_lane_holder:hover > .scrollator_lane {
 	background-color: rgba(0, 0, 0, 0.15);
-	width: 15px;
 }
 
+.scrollator_handle_holder {
+	position: absolute;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 15px;
+	margin: 0 -3px;
+	background-color: transparent;
+	-webkit-transition: width 200ms;
+	-moz-transition:    width 200ms;
+	-ms-transition:     width 200ms;
+	-o-transition:      width 200ms;
+	transition:         width 200ms;
+}
 .scrollator_handle {
 	position: absolute;
-	width: 9px;
+	top: 0;
+	right: 3px;
+	bottom: 0;
+	left: 3px;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	background-color: rgba(0, 0, 0, 0.4);
 	-webkit-transition: width 200ms;
-	-moz-transition: width 200ms;
-	-ms-transition: width 200ms;
-	-o-transition: width 200ms;
-	transition: width 200ms;
+	-moz-transition:    width 200ms;
+	-ms-transition:     width 200ms;
+	-o-transition:      width 200ms;
+	transition:         width 200ms;
 }
 
-.scrollator_lane.hover .scrollator_handle, 
-.scrollator_lane:hover .scrollator_handle {
-	width: 15px;
+.scrollator_lane_holder.hover .scrollator_handle_holder, 
+.scrollator_lane_holder:hover .scrollator_handle_holder {
+	width: 21px;
 }

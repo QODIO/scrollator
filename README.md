@@ -26,7 +26,7 @@ $('#scrollable_div').scrollator();
 ```javascript
 $('#scrollable_div').scrollator({
     custom_class: '',	// A class to be added to this scrollator lane
-    zIndex: '',			// z-index to be added to the scrollbar lane
+    zIndex: '',			// z-index to be added to the scrollator lane
 });
 ```
 
@@ -58,13 +58,15 @@ CSS classes
 -----------
 Here is a list of all the css classes
 
-Class                | Description
--------------------- | ------------------------------------------------------------------------------
-#scrollator_holder   | The main scrollator holder has this id
-scrollator           | This class is added to the scrollable elements which scrollator is added to
-scrollator_lane      | The scrollator lane
-scrollator_body_lane | This class is added to the scrollator lane, if it is the lane of a body element
-scrollator_handle    | The scrollator handle
+Class                     | Description
+------------------------- | ------------------------------------------------------------------------------
+#scrollator_holder        | The main scrollator holder has this id
+scrollator                | This class is added to the scrollable elements which scrollator is added to
+scrollator_lane_holder    | The scrollator lane holder
+scrollator_lane           | The scrollator lane
+scrollator_on_body        | This class is added to the scrollator lane, if it is the lane of a body element
+scrollator_handle_holder  | The scrollator handle holder
+scrollator_handle         | The scrollator handle
 
 
 Browser compatibility

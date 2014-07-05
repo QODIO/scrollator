@@ -54,9 +54,11 @@ $(window).load(function () {
 		};
 		var $sourceElement = $(sourceElement);
 		plugin.$sourceElement = $sourceElement;
-		var $mainScrollbarsHolder = null;
-		var $thisScrollbarLane = null;
-		var $thisScrollbarHandle = null;
+		var $mainScrollatorHolder = null;
+		var $thisScrollatorLaneHolder = null;
+		var $thisScrollatorLane = null;
+		var $thisScrollatorHandleHolder = null;
+		var $thisScrollatorHandle = null;
 		var timerVisibility = null;
 		var isDraggingHandle = false;
 		var dragStartY = 0;
@@ -67,34 +69,48 @@ $(window).load(function () {
 		// INITIALIZE PLUGIN
 		plugin.init = function () {
 			plugin.settings = $.extend({}, defaults, options);
-			$mainScrollbarsHolder = $('#scrollator_holder');
+			$mainScrollatorHolder = $('#scrollator_holder');
 			$sourceElement.addClass('scrollator');
-			$thisScrollbarLane = $(document.createElement('div')).addClass('scrollator_lane');
-			$thisScrollbarLane.addClass(plugin.settings.custom_class);
-			$thisScrollbarLane.css('z-index', $sourceElement.css('z-index'));
-			plugin.settings.zIndex !== '' && $thisScrollbarLane.css('z-index', plugin.settings.zIndex);
-			$sourceElement.is('body') && $thisScrollbarLane.addClass('scrollator_body_lane');
-			$thisScrollbarHandle = $(document.createElement('div')).addClass('scrollator_handle');
-			initializeMainScrollbarsHolder();
+			// initialize scrollator lane holder
+			$thisScrollatorLaneHolder = $(document.createElement('div')).addClass('scrollator_lane_holder');
+			$thisScrollatorLaneHolder.addClass(plugin.settings.custom_class);
+			$thisScrollatorLaneHolder.css('z-index', $sourceElement.css('z-index'));
+			plugin.settings.zIndex !== '' && $thisScrollatorLaneHolder.css('z-index', plugin.settings.zIndex);
+			$sourceElement.is('body') && $thisScrollatorLaneHolder.addClass('scrollator_on_body');
+			// initialize scrollator lane
+			$thisScrollatorLane = $(document.createElement('div')).addClass('scrollator_lane');
+			// initialize scrollator handle holder
+			$thisScrollatorHandleHolder = $(document.createElement('div')).addClass('scrollator_handle_holder');
+			// initialize scrollator handle
+			$thisScrollatorHandle = $(document.createElement('div')).addClass('scrollator_handle');
+			initializeMainScrollatorsHolder();
 			$sourceElement.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
-			$thisScrollbarLane.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
-			$thisScrollbarHandle.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$thisScrollatorLaneHolder.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$thisScrollatorLane.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$thisScrollatorHandleHolder.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			$thisScrollatorHandle.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
 			$sourceElement.bind('mousemove', mouseMoveEvent);
-			$thisScrollbarLane.bind('mousemove', mouseMoveEvent);
-			$thisScrollbarHandle.bind('mousemove', mouseMoveEvent);
-			$thisScrollbarHandle.bind('mousedown', mouseDownEvent);
+			$thisScrollatorLaneHolder.bind('mousemove', mouseMoveEvent);
+			$thisScrollatorLane.bind('mousemove', mouseMoveEvent);
+			$thisScrollatorHandleHolder.bind('mousemove', mouseMoveEvent);
+			$thisScrollatorHandle.bind('mousemove', mouseMoveEvent);
+			$thisScrollatorHandleHolder.bind('mousedown', mouseDownEvent);
+			$thisScrollatorHandle.bind('mousedown', mouseDownEvent);
 			$(window).bind('mouseup', windowMouseUpEvent);
 			$(window).bind('mousemove', windowMouseMoveEvent);
-			$thisScrollbarLane.append($thisScrollbarHandle);
-			$mainScrollbarsHolder.append($thisScrollbarLane);
-			refreshScrollbarPosition();
-			// refresh/resize/position all scrollbars on window resize
+			$thisScrollatorHandleHolder.append($thisScrollatorHandle);
+			$thisScrollatorLane.append($thisScrollatorHandleHolder);
+			$thisScrollatorLaneHolder.append($thisScrollatorLane);
+			$mainScrollatorHolder.append($thisScrollatorLaneHolder);
+			refreshScrollatorPosition();
+			// refresh/resize/position all scrollators on window resize
 			if (!document.body.hasScrollatorPageResizeEventHandler) {
 				document.body.hasScrollatorPageResizeEventHandler = true;
 				$(window).bind('resize', function () {
 					Scrollator.refreshAll();
 				});
 			}
+			mouseMoveEvent();
 		};
 
 
@@ -111,9 +127,9 @@ $(window).load(function () {
 		};
 		var mouseMoveEvent = function () {
 			clearTimeout(timerVisibility);
-			$thisScrollbarLane.css('opacity', 1);
+			$thisScrollatorLaneHolder.css('opacity', 1);
 			timerVisibility = setTimeout(function () {
-				$thisScrollbarLane.css('opacity', 0);
+				$thisScrollatorLaneHolder.css('opacity', 0);
 			}, 1500);
 		};
 		var mouseDownEvent = function (e) {
@@ -122,7 +138,7 @@ $(window).load(function () {
 			dragStartY = e.clientY;
 			dragStartScrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 			dragHandleOffsetY = e.offsetY;
-			$thisScrollbarLane.addClass('hover');
+			$thisScrollatorLaneHolder.addClass('hover');
 		};
 		var windowMouseMoveEvent = function (e) {
 			if (isDraggingHandle) {
@@ -135,14 +151,14 @@ $(window).load(function () {
 		};
 		var windowMouseUpEvent = function () {
 			isDraggingHandle = false;
-			$thisScrollbarLane.removeClass('hover');
+			$thisScrollatorLaneHolder.removeClass('hover');
 		};
 	
 
 		plugin.refresh = function () {
-			refreshScrollbarPosition();
+			refreshScrollatorPosition();
 		};
-		var refreshScrollbarPosition = function () {
+		var refreshScrollatorPosition = function () {
 			var boundingClientRect = $sourceElement[0].getBoundingClientRect();
 			var sourceBounds = {
 				left:   boundingClientRect.left + $(window).scrollLeft(),
@@ -152,33 +168,33 @@ $(window).load(function () {
 				width:  boundingClientRect.width,
 				height: boundingClientRect.height
 			};
-			var paddingTop = parseInt($sourceElement.css('border-top-width'), 10) + 3;
-			var paddingRight = parseInt($sourceElement.css('border-right-width'), 10) + 3;
-			var paddingBottom = parseInt($sourceElement.css('border-bottom-width'), 10) + 3;
+			var paddingTop = parseInt($sourceElement.css('border-top-width'), 10);
+			var paddingRight = parseInt($sourceElement.css('border-right-width'), 10);
+			var paddingBottom = parseInt($sourceElement.css('border-bottom-width'), 10);
 			var paddingLeft = parseInt($sourceElement.css('border-left-width'), 10);
 			var contentHeight = $sourceElement[0].scrollHeight;
 			var laneHeight = ($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight();
 			var handleHeight = (laneHeight / contentHeight) * 100;
 			var handlePosition = (($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop() / contentHeight) * 100;
 			if (!$sourceElement.is('body')) {
-				$thisScrollbarLane.css({
+				$thisScrollatorLaneHolder.css({
 					top: sourceBounds.top + paddingTop,
 					right: -sourceBounds.right + paddingRight,
 					bottom: -sourceBounds.bottom + paddingBottom
 				});
 			}
-			$thisScrollbarHandle.css({
+			$thisScrollatorHandleHolder.css({
 				height: handleHeight + '%',
 				top: handlePosition + '%'
 			});
 		};
 
 
-		// INITIALIZE SCROLLBARS HOLDER IF NEEDED
-		var initializeMainScrollbarsHolder = function () {
-			if ($mainScrollbarsHolder.length === 0) {
-				$mainScrollbarsHolder = $(document.createElement('div')).attr('id', 'scrollator_holder');
-				$('body').append($mainScrollbarsHolder);
+		// INITIALIZE SCROLLATORS HOLDER IF NEEDED
+		var initializeMainScrollatorsHolder = function () {
+			if ($mainScrollatorHolder.length === 0) {
+				$mainScrollatorHolder = $(document.createElement('div')).attr('id', 'scrollator_holder');
+				$('body').append($mainScrollatorHolder);
 			}
 		};
 		
@@ -186,13 +202,13 @@ $(window).load(function () {
 		// HIDE SCROLLATOR
 		plugin.hide = function () {
 			console.log('hide');
-			$thisScrollbarLane.hide();
+			$thisScrollatorLaneHolder.hide();
 		};
 		
 		// SHOW SCROLLATOR
 		plugin.show = function () {
 			console.log('show');
-			$thisScrollbarLane.show();
+			$thisScrollatorLaneHolder.show();
 		};
 
 
@@ -204,16 +220,16 @@ $(window).load(function () {
 			$sourceElement.unbind('mousemove', mouseMoveEvent);
 			$(window).unbind('mouseup', windowMouseUpEvent);
 			$(window).unbind('mousemove', windowMouseMoveEvent);
-			$thisScrollbarLane.remove();
+			$thisScrollatorLaneHolder.remove();
 			var i = Scrollator.scrollatorElementsStack.length;
 			while (i--) {
 				if (Scrollator.scrollatorElementsStack[i] === plugin) {
 					Scrollator.scrollatorElementsStack.splice(i, 1);
 				}
 			}
-			if ($mainScrollbarsHolder.children().length === 0) {
-				$mainScrollbarsHolder.remove();
-				$mainScrollbarsHolder = null;
+			if ($mainScrollatorHolder.children().length === 0) {
+				$mainScrollatorHolder.remove();
+				$mainScrollatorHolder = null;
 			}
 		};
 		
