@@ -26,11 +26,11 @@
 	width: 15px;
 	background-color: transparent;
 	opacity: 1;
-	-webkit-transition: background 200ms, width 200ms, opacity 200ms;
-	-moz-transition:    background 200ms, width 200ms, opacity 200ms;
-	-ms-transition:     background 200ms, width 200ms, opacity 200ms;
-	-o-transition:      background 200ms, width 200ms, opacity 200ms;
-	transition:         background 200ms, width 200ms, opacity 200ms;
+	-webkit-transition: width 200ms, opacity 200ms;
+	-moz-transition:    width 200ms, opacity 200ms;
+	-ms-transition:     width 200ms, opacity 200ms;
+	-o-transition:      width 200ms, opacity 200ms;
+	transition:         width 200ms, opacity 200ms;
 }
 .scrollator_lane {
 	position: absolute;
@@ -44,11 +44,11 @@
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	background-color: rgba(0, 0, 0, 0);
-	-webkit-transition: background 200ms, width 200ms, opacity 200ms;
-	-moz-transition:    background 200ms, width 200ms, opacity 200ms;
-	-ms-transition:     background 200ms, width 200ms, opacity 200ms;
-	-o-transition:      background 200ms, width 200ms, opacity 200ms;
-	transition:         background 200ms, width 200ms, opacity 200ms;
+	-webkit-transition: background 200ms;
+	-moz-transition:    background 200ms;
+	-ms-transition:     background 200ms;
+	-o-transition:      background 200ms;
+	transition:         background 200ms;
 }
 
 .scrollator_lane_holder.scrollator_on_body {
@@ -68,8 +68,8 @@
 	position: absolute;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	width: 15px;
 	margin: 0 -3px;
+	width: 15px;
 	background-color: transparent;
 	-webkit-transition: width 200ms;
 	-moz-transition:    width 200ms;
@@ -89,11 +89,6 @@
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	background-color: rgba(0, 0, 0, 0.4);
-	-webkit-transition: width 200ms;
-	-moz-transition:    width 200ms;
-	-ms-transition:     width 200ms;
-	-o-transition:      width 200ms;
-	transition:         width 200ms;
 }
 
 .scrollator_lane_holder.hover .scrollator_handle_holder, 
