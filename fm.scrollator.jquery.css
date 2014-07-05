@@ -25,7 +25,7 @@
 	box-sizing: border-box;
 	width: 15px;
 	background-color: transparent;
-	opacity: 1;
+	opacity: 0;
 	-webkit-transition: width 200ms, opacity 200ms;
 	-moz-transition:    width 200ms, opacity 200ms;
 	-ms-transition:     width 200ms, opacity 200ms;

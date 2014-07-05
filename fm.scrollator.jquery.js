@@ -127,10 +127,14 @@ $(window).load(function () {
 		};
 		var mouseMoveEvent = function () {
 			clearTimeout(timerVisibility);
-			$thisScrollatorLaneHolder.css('opacity', 1);
-			timerVisibility = setTimeout(function () {
+			if ($sourceElement[0].scrollHeight > ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight())) {
+				$thisScrollatorLaneHolder.css('opacity', 1);
+				timerVisibility = setTimeout(function () {
+					$thisScrollatorLaneHolder.css('opacity', 0);
+				}, 1500);
+			} else {
 				$thisScrollatorLaneHolder.css('opacity', 0);
-			}, 1500);
+			}
 		};
 		var mouseDownEvent = function (e) {
 			e.preventDefault();
