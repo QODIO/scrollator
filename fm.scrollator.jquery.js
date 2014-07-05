@@ -205,13 +205,11 @@ $(window).load(function () {
 		
 		// HIDE SCROLLATOR
 		plugin.hide = function () {
-			console.log('hide');
 			$thisScrollatorLaneHolder.hide();
 		};
 		
 		// SHOW SCROLLATOR
 		plugin.show = function () {
-			console.log('show');
 			$thisScrollatorLaneHolder.show();
 		};
 
