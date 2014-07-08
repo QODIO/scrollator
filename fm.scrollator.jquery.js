@@ -45,13 +45,11 @@ $(window).load(function () {
 (function($) {
 	$.scrollator = function (sourceElement, options) {
 		var defaults = {
-		};
-
-		var plugin = this;
-		plugin.settings = {
 			custom_class: '',
 			zIndex: ''
 		};
+		var plugin = this;
+		plugin.settings = {};
 		var $sourceElement = $(sourceElement);
 		plugin.$sourceElement = $sourceElement;
 		var $mainScrollatorHolder = null;
@@ -147,7 +145,7 @@ $(window).load(function () {
 		var windowMouseMoveEvent = function (e) {
 			if (isDraggingHandle) {
 				var draggedY = e.clientY - dragStartY;
-				var multiplier = $sourceElement[0].scrollHeight / (($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight());
+				var multiplier = $sourceElement[0].scrollHeight / ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight());
 				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(dragStartScrollTop + (draggedY * multiplier));
 				Scrollator.refreshAll();
 				mouseMoveEvent();
