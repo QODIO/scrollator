@@ -1,7 +1,7 @@
 /*
  Scrollator jQuery Plugin
  Scrollator is a jQuery-based replacement for the browsers scroll bar, which doesn't use any space.
- version 1.0, July 3rd, 2014
+ version 1.1, July 3rd, 2014
  by Ingi P. Jacobsen
 
  The MIT License (MIT)
@@ -96,6 +96,7 @@ $(window).load(function () {
 			$thisScrollatorHandle.bind('mousedown', mouseDownEvent);
 			$(window).bind('mouseup', windowMouseUpEvent);
 			$(window).bind('mousemove', windowMouseMoveEvent);
+			$(window).bind('keydown', windowKeyDownEvent);
 			$thisScrollatorHandleHolder.append($thisScrollatorHandle);
 			$thisScrollatorLane.append($thisScrollatorHandleHolder);
 			$thisScrollatorLaneHolder.append($thisScrollatorLane);
@@ -113,14 +114,16 @@ $(window).load(function () {
 
 
 		var mouseWheelEvent = function (e) {
-			if ($(e.target).css('overflow-y') != 'auto') {
-				e.preventDefault();
-				e.stopPropagation();
-				var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
-				var wheelDelta = e.originalEvent.wheelDelta !== undefined ? e.originalEvent.wheelDelta : (e.originalEvent.detail*-1);
-				scrollTop += (wheelDelta > 0) ? -100 : 100;
-				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
-				Scrollator.refreshAll();
+			if (!e.ctrlKey) {
+				if ($(e.target).css('overflow-y') != 'auto') {
+					e.preventDefault();
+					e.stopPropagation();
+					var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+					var wheelDelta = e.originalEvent.wheelDelta !== undefined ? e.originalEvent.wheelDelta : (e.originalEvent.detail*-1);
+					scrollTop += (wheelDelta > 0) ? -100 : 100;
+					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
+					Scrollator.refreshAll();
+				}
 			}
 		};
 		var mouseMoveEvent = function () {
@@ -154,6 +157,22 @@ $(window).load(function () {
 		var windowMouseUpEvent = function () {
 			isDraggingHandle = false;
 			$thisScrollatorLaneHolder.removeClass('hover');
+		};
+		var windowKeyDownEvent = function (e) {
+			var key = {
+				pageUp: 33,
+				pageDown: 34
+			};
+			if ((e.keyCode == key.pageUp || e.keyCode == key.pageDown) && $(document.activeElement).prop('tagName') != 'TEXTAREA') {
+				var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+				if (e.keyCode == key.pageUp) {
+					scrollTop -= $(window).height() - 100;
+				} else if (e.keyCode == key.pageDown) {
+					scrollTop += $(window).height() - 100;
+				}
+				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
+				Scrollator.refreshAll();
+			}
 		};
 	
 
@@ -220,6 +239,7 @@ $(window).load(function () {
 			$sourceElement.unbind('mousemove', mouseMoveEvent);
 			$(window).unbind('mouseup', windowMouseUpEvent);
 			$(window).unbind('mousemove', windowMouseMoveEvent);
+			$(window).unbind('keydown', windowKeyDownEvent);
 			$thisScrollatorLaneHolder.remove();
 			var i = Scrollator.scrollatorElementsStack.length;
 			while (i--) {
