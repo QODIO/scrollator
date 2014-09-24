@@ -94,15 +94,16 @@ $(window).load(function () {
 			$thisScrollatorHandle.bind('mousemove', mouseMoveEvent);
 			$thisScrollatorHandleHolder.bind('mousedown', mouseDownEvent);
 			$thisScrollatorHandle.bind('mousedown', mouseDownEvent);
-			$(window).bind('mouseup', windowMouseUpEvent);
-			$(window).bind('mousemove', windowMouseMoveEvent);
-			$(window).bind('keydown', windowKeyDownEvent);
 			$thisScrollatorHandleHolder.append($thisScrollatorHandle);
 			$thisScrollatorLane.append($thisScrollatorHandleHolder);
 			$thisScrollatorLaneHolder.append($thisScrollatorLane);
 			$mainScrollatorHolder.append($thisScrollatorLaneHolder);
-			refreshScrollatorPosition();
+			// bind global events
+			$(window).bind('mouseup', windowMouseUpEvent);
+			$(window).bind('mousemove', windowMouseMoveEvent);
+			$(window).bind('keydown', windowKeyDownEvent);
 			// refresh/resize/position all scrollators on window resize
+			refreshScrollatorPosition();
 			if (!document.body.hasScrollatorPageResizeEventHandler) {
 				document.body.hasScrollatorPageResizeEventHandler = true;
 				$(window).bind('resize', function () {
@@ -119,8 +120,15 @@ $(window).load(function () {
 					e.preventDefault();
 					e.stopPropagation();
 					var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
-					var wheelDelta = e.originalEvent.wheelDelta !== undefined ? e.originalEvent.wheelDelta : (e.originalEvent.detail*-1);
-					scrollTop += (wheelDelta > 0) ? -100 : 100;
+					var scrollAdjust = 0;
+					if (e.originalEvent.wheelDeltaY !== undefined && e.originalEvent.wheelDeltaY !== 0) { // Chrome
+						scrollAdjust = e.originalEvent.wheelDeltaY / 1.2;
+					} else if (e.originalEvent.wheelDelta !== undefined && e.originalEvent.wheelDelta !== 0) { // IE, Opera
+						scrollAdjust = e.originalEvent.wheelDelta / 1.2;
+					} else if (e.originalEvent.detail !== undefined && e.originalEvent.detail !== 0) { // Firefox
+						scrollAdjust = e.originalEvent.detail * -33.33;
+					}
+					scrollTop += scrollAdjust*-1;
 					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
 					Scrollator.refreshAll();
 				}
@@ -165,13 +173,15 @@ $(window).load(function () {
 			};
 			if ((e.keyCode == key.pageUp || e.keyCode == key.pageDown) && $(document.activeElement).prop('tagName') != 'TEXTAREA') {
 				var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+				var scrollAdjust = ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight()) * 0.9;
 				if (e.keyCode == key.pageUp) {
-					scrollTop -= $(window).height() - 100;
+					scrollTop -= scrollAdjust;
 				} else if (e.keyCode == key.pageDown) {
-					scrollTop += $(window).height() - 100;
+					scrollTop += scrollAdjust;
 				}
 				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
 				Scrollator.refreshAll();
+				mouseMoveEvent();
 			}
 		};
 	
