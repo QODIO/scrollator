@@ -38,7 +38,7 @@ Method                 | Description
 Scrollator.refreshAll  | Resize and reposition all scrollators
 
 
-jQuery methods
+Scrollator methods
 --------------
 Method             | Description
 ------------------ | -----------
@@ -48,9 +48,10 @@ show               | Show the scrollator
 hide               | Hide the scrollator
 
 
-###### Method usage
+###### Scrollator method usage
+You can call the above methods from the `scrollator` data value, like so:
 ```javascript
-$('#scrollable_div').numbertor('destroy');
+$('#scrollable_div').data('scrollator').destroy();
 ```
 
 
