@@ -178,10 +178,11 @@ $(window).load(function () {
 			};
 			if ((e.keyCode == key.pageUp || e.keyCode == key.pageDown) && $(document.activeElement).prop('tagName') != 'TEXTAREA') {
 				var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+				var scrollAdjust = ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight()) * 0.9;
 				if (e.keyCode == key.pageUp) {
-					scrollTop -= $(window).height() - 100;
+					scrollTop -= scrollAdjust;
 				} else if (e.keyCode == key.pageDown) {
-					scrollTop += $(window).height() - 100;
+					scrollTop += scrollAdjust;
 				}
 				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
 				Scrollator.refreshAll();
