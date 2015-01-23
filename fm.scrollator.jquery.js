@@ -50,6 +50,7 @@ $(window).load(function () {
 		};
 		var plugin = this;
 		plugin.settings = {};
+		var $html = $('html');
 		var $sourceElement = $(sourceElement);
 		plugin.$sourceElement = $sourceElement;
 		var $mainScrollatorHolder = null;
@@ -82,28 +83,32 @@ $(window).load(function () {
 			// initialize scrollator handle
 			$thisScrollatorHandle = $(document.createElement('div')).addClass('scrollator_handle');
 			initializeMainScrollatorsHolder();
-			$sourceElement.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+			if ($sourceElement.prop('tagName') == 'BODY') {
+				$html.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+				$html.bind('mousemove', mouseMoveEvent);
+			} else {
+				$sourceElement.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+				$sourceElement.bind('mousemove', mouseMoveEvent);
+			}
 			$thisScrollatorLaneHolder.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
 			$thisScrollatorLane.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
 			$thisScrollatorHandleHolder.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
 			$thisScrollatorHandle.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
-			$sourceElement.bind('mousemove', mouseMoveEvent);
 			$thisScrollatorLaneHolder.bind('mousemove', mouseMoveEvent);
 			$thisScrollatorLane.bind('mousemove', mouseMoveEvent);
 			$thisScrollatorHandleHolder.bind('mousemove', mouseMoveEvent);
 			$thisScrollatorHandle.bind('mousemove', mouseMoveEvent);
 			$thisScrollatorHandleHolder.bind('mousedown', mouseDownEvent);
 			$thisScrollatorHandle.bind('mousedown', mouseDownEvent);
+			$(window).bind('mouseup', windowMouseUpEvent);
+			$(window).bind('mousemove', windowMouseMoveEvent);
+			$(window).bind('keydown', windowKeyDownEvent);
 			$thisScrollatorHandleHolder.append($thisScrollatorHandle);
 			$thisScrollatorLane.append($thisScrollatorHandleHolder);
 			$thisScrollatorLaneHolder.append($thisScrollatorLane);
 			$mainScrollatorHolder.append($thisScrollatorLaneHolder);
-			// bind global events
-			$(window).bind('mouseup', windowMouseUpEvent);
-			$(window).bind('mousemove', windowMouseMoveEvent);
-			$(window).bind('keydown', windowKeyDownEvent);
-			// refresh/resize/position all scrollators on window resize
 			refreshScrollatorPosition();
+			// refresh/resize/position all scrollators on window resize
 			if (!document.body.hasScrollatorPageResizeEventHandler) {
 				document.body.hasScrollatorPageResizeEventHandler = true;
 				$(window).bind('resize', function () {
@@ -173,11 +178,10 @@ $(window).load(function () {
 			};
 			if ((e.keyCode == key.pageUp || e.keyCode == key.pageDown) && $(document.activeElement).prop('tagName') != 'TEXTAREA') {
 				var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
-				var scrollAdjust = ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight()) * 0.9;
 				if (e.keyCode == key.pageUp) {
-					scrollTop -= scrollAdjust;
+					scrollTop -= $(window).height() - 100;
 				} else if (e.keyCode == key.pageDown) {
-					scrollTop += scrollAdjust;
+					scrollTop += $(window).height() - 100;
 				}
 				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
 				Scrollator.refreshAll();
@@ -245,8 +249,13 @@ $(window).load(function () {
 		plugin.destroy = function () {
 			$sourceElement.removeClass('scrollator');
 			$.removeData(sourceElement, 'scrollator');
-			$sourceElement.unbind('mousewheel DOMMouseScroll', mouseWheelEvent);
-			$sourceElement.unbind('mousemove', mouseMoveEvent);
+			if ($sourceElement.prop('tagName') == 'BODY') {
+				$html.unbind('mousewheel DOMMouseScroll', mouseWheelEvent);
+				$html.unbind('mousemove', mouseMoveEvent);
+			} else {
+				$sourceElement.unbind('mousewheel DOMMouseScroll', mouseWheelEvent);
+				$sourceElement.unbind('mousemove', mouseMoveEvent);
+			}
 			$(window).unbind('mouseup', windowMouseUpEvent);
 			$(window).unbind('mousemove', windowMouseMoveEvent);
 			$(window).unbind('keydown', windowKeyDownEvent);
@@ -270,7 +279,7 @@ $(window).load(function () {
 	$.fn.scrollator = function(options) {
 		options = options !== undefined ? options : {};
 		return this.each(function () {
-			if ( !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+			if ( !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|ARM|Touch|Opera Mini/i.test(navigator.userAgent) ) {
 				if (typeof(options) === 'object') {
 					if (undefined === $(this).data('scrollator')) {
 						var plugin = new $.scrollator(this, options);
