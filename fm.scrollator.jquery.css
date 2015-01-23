@@ -43,7 +43,7 @@
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	background-color: rgba(0, 0, 0, 0);
+	background-color: rgba(64, 64, 64, 0);
 	-webkit-transition: background 200ms;
 	-moz-transition:    background 200ms;
 	-ms-transition:     background 200ms;
@@ -61,7 +61,7 @@
 }
 .scrollator_lane_holder.hover > .scrollator_lane, 
 .scrollator_lane_holder:hover > .scrollator_lane {
-	background-color: rgba(0, 0, 0, 0.15);
+	background-color: rgba(64, 64, 64, 0.25);
 }
 
 .scrollator_handle_holder {
@@ -88,7 +88,7 @@
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(64, 64, 64, 0.7);
 }
 
 .scrollator_lane_holder.hover .scrollator_handle_holder, 
