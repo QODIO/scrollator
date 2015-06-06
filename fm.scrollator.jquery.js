@@ -1,7 +1,7 @@
 /*
  Scrollator jQuery Plugin
  Scrollator is a jQuery-based replacement for the browsers scroll bar, which doesn't use any space.
- version 1.1, July 3rd, 2014
+ version 1.2, June 1st, 2015
  by Ingi P. Jacobsen
 
  The MIT License (MIT)
@@ -46,6 +46,7 @@ $(window).load(function () {
 	$.scrollator = function (sourceElement, options) {
 		var defaults = {
 			custom_class: '',
+			prevent_propagation: false,
 			zIndex: ''
 		};
 		var plugin = this;
@@ -121,10 +122,9 @@ $(window).load(function () {
 
 		var mouseWheelEvent = function (e) {
 			if (!e.ctrlKey) {
-				if ($(e.target).css('overflow-y') != 'auto') {
-					e.preventDefault();
-					e.stopPropagation();
+				if ($(e.target).css('overflow-y') != 'auto' || $(e.target).css('position') == 'fixed' || $(e.target).prop('tagName') == 'PRE') {
 					var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+					var scrollTopBefore = scrollTop;
 					var scrollAdjust = 0;
 					if (e.originalEvent.wheelDeltaY !== undefined && e.originalEvent.wheelDeltaY !== 0) { // Chrome
 						scrollAdjust = e.originalEvent.wheelDeltaY / 1.2;
@@ -135,7 +135,13 @@ $(window).load(function () {
 					}
 					scrollTop += scrollAdjust*-1;
 					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
+					scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 					Scrollator.refreshAll();
+
+					if (scrollTopBefore != scrollTop || plugin.settings.prevent_propagation) {
+						e.preventDefault();
+						e.stopPropagation();
+					}
 				}
 			}
 		};
