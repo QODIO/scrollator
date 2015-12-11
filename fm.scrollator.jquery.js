@@ -1,7 +1,7 @@
 /*
  Scrollator jQuery Plugin
  Scrollator is a jQuery-based replacement for the browsers scroll bar, which doesn't use any space.
- version 1.2, June 1st, 2015
+ version 1.6, Dec 11th, 2015
  by Ingi P. Jacobsen
 
  The MIT License (MIT)
@@ -46,7 +46,9 @@ $(window).load(function () {
 	$.scrollator = function (sourceElement, options) {
 		var defaults = {
 			custom_class: '',
+			append_to: 'body',
 			prevent_propagation: false,
+			min_handle_height_percent: 10,
 			zIndex: ''
 		};
 		var plugin = this;
@@ -86,9 +88,11 @@ $(window).load(function () {
 			initializeMainScrollatorsHolder();
 			if ($sourceElement.prop('tagName') == 'BODY') {
 				$html.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+				$html.bind('scroll', refreshScrollatorPosition);
 				$html.bind('mousemove', mouseMoveEvent);
 			} else {
 				$sourceElement.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
+				$sourceElement.bind('scroll', refreshScrollatorPosition);
 				$sourceElement.bind('mousemove', mouseMoveEvent);
 			}
 			$thisScrollatorLaneHolder.bind('mousewheel DOMMouseScroll', mouseWheelEvent);
@@ -121,8 +125,15 @@ $(window).load(function () {
 
 
 		var mouseWheelEvent = function (e) {
-			if (!e.ctrlKey) {
-				if ($(e.target).css('overflow-y') != 'auto' || $(e.target).css('position') == 'fixed' || $(e.target).prop('tagName') == 'PRE') {
+			if (!e.ctrlKey && !e.metaKey) {
+				if (
+					!$(e.currentTarget).hasClass('scrollator_noscroll') 
+					&& (
+						$(e.target).css('overflow-y') != 'auto' 
+						|| $(e.target).css('position') == 'fixed' 
+						|| $(e.target).prop('tagName') == 'PRE'
+					)
+				) {
 					var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 					var scrollTopBefore = scrollTop;
 					var scrollAdjust = 0;
@@ -138,14 +149,20 @@ $(window).load(function () {
 					scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 					Scrollator.refreshAll();
 
-					if (scrollTopBefore != scrollTop || plugin.settings.prevent_propagation) {
+					if (scrollTopBefore != scrollTop || plugin.settings.prevent_propagation || $(e.currentTarget).hasClass('scrollator_nopropagation')) {
 						e.preventDefault();
 						e.stopPropagation();
 					}
 				}
 			}
 		};
-		var mouseMoveEvent = function () {
+		var mouseMoveEvent = function (e) {
+			if (typeof e !== 'undefined') {
+				if ($(e.currentTarget).hasClass('scrollator_noscroll')) {
+					$thisScrollatorLaneHolder.css('opacity', 0);
+					return;
+				}
+			}
 			clearTimeout(timerVisibility);
 			if ($sourceElement[0].scrollHeight > ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight())) {
 				$thisScrollatorLaneHolder.css('opacity', 1);
@@ -178,21 +195,32 @@ $(window).load(function () {
 			$thisScrollatorLaneHolder.removeClass('hover');
 		};
 		var windowKeyDownEvent = function (e) {
-			var key = {
-				pageUp: 33,
-				pageDown: 34
-			};
-			if ((e.keyCode == key.pageUp || e.keyCode == key.pageDown) && $(document.activeElement).prop('tagName') != 'TEXTAREA') {
-				var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
-				var scrollAdjust = ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight()) * 0.9;
-				if (e.keyCode == key.pageUp) {
-					scrollTop -= scrollAdjust;
-				} else if (e.keyCode == key.pageDown) {
-					scrollTop += scrollAdjust;
+			if ($sourceElement.is(':visible')) {
+				var key = {
+					pageUp: 33,
+					pageDown: 34,
+					left: 37,
+					up: 38,
+					right: 39,
+					down: 40
+				};
+				if ((e.keyCode == key.pageUp || e.keyCode == key.pageDown || e.keyCode == key.up || e.keyCode == key.down) && $(document.activeElement).prop('tagName') != 'TEXTAREA') {
+					var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
+					var scrollAdjust = 0;
+					if (e.keyCode == key.pageUp || e.keyCode == key.pageDown) {
+						scrollAdjust = ($sourceElement.is('body') ? $(window).height() : $sourceElement.innerHeight()) * 0.9;
+					} else if (e.keyCode == key.up || e.keyCode == key.down) {
+						scrollAdjust = 0; //40
+					}
+					if (e.keyCode == key.pageUp || e.keyCode == key.up) {
+						scrollTop -= scrollAdjust;
+					} else if (e.keyCode == key.pageDown || e.keyCode == key.down) {
+						scrollTop += scrollAdjust;
+					}
+					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
+					Scrollator.refreshAll();
+					mouseMoveEvent();
 				}
-				($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
-				Scrollator.refreshAll();
-				mouseMoveEvent();
 			}
 		};
 	
@@ -201,34 +229,43 @@ $(window).load(function () {
 			refreshScrollatorPosition();
 		};
 		var refreshScrollatorPosition = function () {
-			var boundingClientRect = $sourceElement[0].getBoundingClientRect();
-			var sourceBounds = {
-				left:   boundingClientRect.left + $(window).scrollLeft(),
-				top:    boundingClientRect.top + $(window).scrollTop(),
-				right:  boundingClientRect.right + $(window).scrollLeft(),
-				bottom: boundingClientRect.bottom + $(window).scrollTop(),
-				width:  boundingClientRect.width,
-				height: boundingClientRect.height
-			};
-			var paddingTop = parseInt($sourceElement.css('border-top-width'), 10);
-			var paddingRight = parseInt($sourceElement.css('border-right-width'), 10);
-			var paddingBottom = parseInt($sourceElement.css('border-bottom-width'), 10);
-			var paddingLeft = parseInt($sourceElement.css('border-left-width'), 10);
-			var contentHeight = $sourceElement[0].scrollHeight;
-			var laneHeight = ($sourceElement.is('body')) ? $(window).height() : $sourceElement.innerHeight();
-			var handleHeight = (laneHeight / contentHeight) * 100;
-			var handlePosition = (($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop() / contentHeight) * 100;
-			if (!$sourceElement.is('body')) {
-				$thisScrollatorLaneHolder.css({
-					top: sourceBounds.top + paddingTop,
-					right: -sourceBounds.right + paddingRight,
-					bottom: -sourceBounds.bottom + paddingBottom
+			if ($sourceElement.is(':visible')) {
+				var boundingClientRect = $sourceElement[0].getBoundingClientRect();
+				var $window = $(window);
+				var sourceBounds = {
+					left:   boundingClientRect.left + $window.scrollLeft(),
+					top:    boundingClientRect.top + $window.scrollTop(),
+					right:  boundingClientRect.right + $window.scrollLeft(),
+					bottom: boundingClientRect.bottom + $window.scrollTop(),
+					width:  boundingClientRect.width,
+					height: boundingClientRect.height
+				};
+				var paddingTop = parseInt($sourceElement.css('border-top-width'), 10);
+				var paddingRight = parseInt($sourceElement.css('border-right-width'), 10);
+				var paddingBottom = parseInt($sourceElement.css('border-bottom-width'), 10);
+				var paddingLeft = parseInt($sourceElement.css('border-left-width'), 10);
+				var contentHeight = $sourceElement.prop('scrollHeight');
+				var laneHeight = $sourceElement.is('body') ? $window.height() : $sourceElement.innerHeight();
+				var handleHeight = (laneHeight / contentHeight) * 100;
+				var handlePosition = (($sourceElement.is('body') ? $window : $sourceElement).scrollTop() / contentHeight) * 100;
+				var handlePosition100 = handlePosition / ((100 - handleHeight) / 100);
+				var handlePositionSubtract = 0;
+				if (handleHeight < plugin.settings.min_handle_height_percent) {
+					handlePositionSubtract = (plugin.settings.min_handle_height_percent - handleHeight) * (handlePosition100/100);
+					handleHeight = plugin.settings.min_handle_height_percent;
+				}
+				if (!$sourceElement.is('body')) {
+					$thisScrollatorLaneHolder.css({
+						top: sourceBounds.top + paddingTop,
+						right: -sourceBounds.right + paddingRight,
+						bottom: -sourceBounds.bottom + paddingBottom
+					});
+				}
+				$thisScrollatorHandleHolder.css({
+					height: handleHeight + '%',
+					top: handlePosition - handlePositionSubtract + '%'
 				});
 			}
-			$thisScrollatorHandleHolder.css({
-				height: handleHeight + '%',
-				top: handlePosition + '%'
-			});
 		};
 
 
@@ -236,7 +273,7 @@ $(window).load(function () {
 		var initializeMainScrollatorsHolder = function () {
 			if ($mainScrollatorHolder.length === 0) {
 				$mainScrollatorHolder = $(document.createElement('div')).attr('id', 'scrollator_holder');
-				$('body').append($mainScrollatorHolder);
+				$(plugin.settings.append_to).append($mainScrollatorHolder);
 			}
 		};
 		
@@ -288,7 +325,7 @@ $(window).load(function () {
 		return this.each(function () {
 			if ( !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|ARM|Touch|Opera Mini/i.test(navigator.userAgent) ) {
 				if (typeof(options) === 'object') {
-					if (undefined === $(this).data('scrollator')) {
+					if ($(this).data('scrollator') === undefined) {
 						var plugin = new $.scrollator(this, options);
 						Scrollator.scrollatorElementsStack.push(plugin);
 						$(this).data('scrollator', plugin);
