@@ -15,18 +15,25 @@ Usage
 ###### to activate replacement:
 ```javascript
 $(document.body).scrollator();
-```
 or
-```javascript
 $('#scrollable_div').scrollator();
+```
+if inline markup
+```html
+<div class="scrollator" data-scrollator-prevent-propagation="true">
+    ...content
+</div>
 ```
 
 
 ###### if you want to change settings:
 ```javascript
 $('#scrollable_div').scrollator({
-    custom_class: '',	// A class to be added to this scrollator lane
-    zIndex: '',			// z-index to be added to the scrollator lane
+    customClass: '',            // A class to be added to this scrollator lane
+    appendTo: 'body',           // jQuery selector defining where to append scrollator elements
+    preventPropagation: false,  // If true, there will be no propagation to parent scrollator elements
+    minHandleHeightPercent: 10, // Minimum height of handle, in percent
+    zIndex: '',                 // z-index to be added to the scrollator lane
 });
 ```
 

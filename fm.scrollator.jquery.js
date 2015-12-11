@@ -45,10 +45,10 @@ $(window).load(function () {
 (function($) {
 	$.scrollator = function (sourceElement, options) {
 		var defaults = {
-			custom_class: '',
-			append_to: 'body',
-			prevent_propagation: false,
-			min_handle_height_percent: 10,
+			customClass: '',
+			appendTo: 'body',
+			preventPropagation: false,
+			minHandleHeightPercent: 10,
 			zIndex: ''
 		};
 		var plugin = this;
@@ -75,7 +75,7 @@ $(window).load(function () {
 			$sourceElement.addClass('scrollator');
 			// initialize scrollator lane holder
 			$thisScrollatorLaneHolder = $(document.createElement('div')).addClass('scrollator_lane_holder');
-			$thisScrollatorLaneHolder.addClass(plugin.settings.custom_class);
+			$thisScrollatorLaneHolder.addClass(plugin.settings.customClass);
 			$thisScrollatorLaneHolder.css('z-index', $sourceElement.css('z-index'));
 			plugin.settings.zIndex !== '' && $thisScrollatorLaneHolder.css('z-index', plugin.settings.zIndex);
 			$sourceElement.is('body') && $thisScrollatorLaneHolder.addClass('scrollator_on_body');
@@ -149,7 +149,7 @@ $(window).load(function () {
 					scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 					Scrollator.refreshAll();
 
-					if (scrollTopBefore != scrollTop || plugin.settings.prevent_propagation || $(e.currentTarget).hasClass('scrollator_nopropagation')) {
+					if (scrollTopBefore != scrollTop || plugin.settings.preventPropagation || $(e.currentTarget).hasClass('scrollator_nopropagation')) {
 						e.preventDefault();
 						e.stopPropagation();
 					}
@@ -250,9 +250,9 @@ $(window).load(function () {
 				var handlePosition = (($sourceElement.is('body') ? $window : $sourceElement).scrollTop() / contentHeight) * 100;
 				var handlePosition100 = handlePosition / ((100 - handleHeight) / 100);
 				var handlePositionSubtract = 0;
-				if (handleHeight < plugin.settings.min_handle_height_percent) {
-					handlePositionSubtract = (plugin.settings.min_handle_height_percent - handleHeight) * (handlePosition100/100);
-					handleHeight = plugin.settings.min_handle_height_percent;
+				if (handleHeight < plugin.settings.minHandleHeightPercent) {
+					handlePositionSubtract = (plugin.settings.minHandleHeightPercent - handleHeight) * (handlePosition100/100);
+					handleHeight = plugin.settings.minHandleHeightPercent;
 				}
 				if (!$sourceElement.is('body')) {
 					$thisScrollatorLaneHolder.css({
@@ -273,7 +273,7 @@ $(window).load(function () {
 		var initializeMainScrollatorsHolder = function () {
 			if ($mainScrollatorHolder.length === 0) {
 				$mainScrollatorHolder = $(document.createElement('div')).attr('id', 'scrollator_holder');
-				$(plugin.settings.append_to).append($mainScrollatorHolder);
+				$(plugin.settings.appendTo).append($mainScrollatorHolder);
 			}
 		};
 		
@@ -340,3 +340,16 @@ $(window).load(function () {
 	};
 
 }(jQuery));
+
+$(function () {
+	$('.scrollator').each(function () {
+		var $this = $(this);
+		var options = {};
+		$.each($this.data(), function (key, value) {
+			if (key.substring(0, 10) == 'scrollator') {
+				options[key.substring(10, 11).toLowerCase() + key.substring(11)] = value;
+			}
+		});
+		$this.scrollator(options);
+	});
+});
