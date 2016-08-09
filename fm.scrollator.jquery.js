@@ -41,8 +41,19 @@ Scrollator = {
 };
 $(window).load(function () {
 	Scrollator.refreshAll();
+	setInterval(function () {
+		Scrollator.refreshAll();
+	}, 200)
 });
 (function($) {
+	$.extend($.easing,
+		{
+			easeOutCubic: function (x, t, b, c, d) {
+				return c*((t=t/d-1)*t*t + 1) + b;
+			}
+		}
+	);
+	
 	$.scrollator = function (sourceElement, options) {
 		var defaults = {
 			customClass: '',
@@ -146,6 +157,7 @@ $(window).load(function () {
 					}
 					scrollTop += scrollAdjust*-1;
 					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
+					//($sourceElement.is('body') ? $('body, html') : $sourceElement).finish().animate({ scrollTop: scrollTop }, 150, 'easeOutCubic');
 					scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 					Scrollator.refreshAll();
 
