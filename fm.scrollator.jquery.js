@@ -165,6 +165,7 @@ $(window).load(function () {
 						e.preventDefault();
 						e.stopPropagation();
 					}
+					mouseMoveEvent();
 				}
 			}
 		};
