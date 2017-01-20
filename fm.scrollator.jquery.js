@@ -135,26 +135,38 @@ $(window).load(function () {
 		};
 
 
+		var calcScrollAdjust = function(e){
+      var scrollAdjust = 0;
+      if (e.originalEvent.wheelDeltaY !== undefined && e.originalEvent.wheelDeltaY !== 0) { // Chrome
+        scrollAdjust = e.originalEvent.wheelDeltaY / 1.2;
+      } else if (e.originalEvent.wheelDelta !== undefined && e.originalEvent.wheelDelta !== 0) { // IE, Opera
+        scrollAdjust = e.originalEvent.wheelDelta / 1.2;
+      } else if (e.originalEvent.detail !== undefined && e.originalEvent.detail !== 0) { // Firefox
+        scrollAdjust = e.originalEvent.detail * -33.33;
+      }
+      return scrollAdjust;
+		};
+		var shouldScrollSourceElement = function(e) {
+			// handle scrollable element such as textarea
+			if (e.target !== $sourceElement.get(0) && $(e.target).css('overflow-y') == 'auto') {
+				var scrollAdjust = calcScrollAdjust(e);
+				if (scrollAdjust > 0 && e.target.scrollTop !== 0) {
+					return false;
+				} else if(scrollAdjust < 0 && (e.target.scrollTop + e.target.clientHeight) !== e.target.scrollHeight) {
+					return false;
+				}
+			}
+			return true;
+		};
 		var mouseWheelEvent = function (e) {
 			if (!e.ctrlKey && !e.metaKey) {
 				if (
-					!$(e.currentTarget).hasClass('scrollator_noscroll') 
-					&& (
-						$(e.target).css('overflow-y') != 'auto' 
-						|| $(e.target).css('position') == 'fixed' 
-						|| $(e.target).prop('tagName') == 'PRE'
-					)
+					!$(e.currentTarget).hasClass('scrollator_noscroll')
+					&& shouldScrollSourceElement(e)
 				) {
 					var scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
 					var scrollTopBefore = scrollTop;
-					var scrollAdjust = 0;
-					if (e.originalEvent.wheelDeltaY !== undefined && e.originalEvent.wheelDeltaY !== 0) { // Chrome
-						scrollAdjust = e.originalEvent.wheelDeltaY / 1.2;
-					} else if (e.originalEvent.wheelDelta !== undefined && e.originalEvent.wheelDelta !== 0) { // IE, Opera
-						scrollAdjust = e.originalEvent.wheelDelta / 1.2;
-					} else if (e.originalEvent.detail !== undefined && e.originalEvent.detail !== 0) { // Firefox
-						scrollAdjust = e.originalEvent.detail * -33.33;
-					}
+					var scrollAdjust = calcScrollAdjust(e);
 					scrollTop += scrollAdjust*-1;
 					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
 					//($sourceElement.is('body') ? $('body, html') : $sourceElement).finish().animate({ scrollTop: scrollTop }, 150, 'easeOutCubic');
