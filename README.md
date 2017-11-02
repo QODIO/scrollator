@@ -1,7 +1,7 @@
 Scrollator
 =======
 Scrollator is a jQuery-based replacement for the browsers scroll bar, which doesn't use any space. Has very good performance.
-[You can see a demo here](http://opensource.faroemedia.com/scrollator).
+[You can see a demo here](http://opensource.qodio.com/scrollator).
 
 
 Usage
@@ -90,7 +90,7 @@ Copyright and license
 ---------------------
 The MIT License (MIT)
 
-Copyright (c) 2014 Faroe Media
+Copyright (c) 2014 Qodio
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
