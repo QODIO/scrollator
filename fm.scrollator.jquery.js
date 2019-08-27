@@ -159,12 +159,13 @@ $(window).load(function () {
 					($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop(scrollTop);
 					//($sourceElement.is('body') ? $('body, html') : $sourceElement).finish().animate({ scrollTop: scrollTop }, 150, 'easeOutCubic');
 					scrollTop = ($sourceElement.is('body') ? $(window) : $sourceElement).scrollTop();
-					Scrollator.refreshAll();
+					//Scrollator.refreshAll(); performance issue
 
 					if (scrollTopBefore != scrollTop || plugin.settings.preventPropagation || $(e.currentTarget).hasClass('scrollator_nopropagation')) {
 						e.preventDefault();
 						e.stopPropagation();
 					}
+					mouseMoveEvent();
 				}
 			}
 		};
